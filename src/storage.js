@@ -7,9 +7,6 @@ import cloneDeep from 'lodash-es/cloneDeep.js';
 import isString from 'lodash-es/isString.js';
 import sessionStorageWrapper from "./drivers/sessionStorage.js";
 
-const IN_MEMORY = memoryDriver._driver
-localForage.defineDriver(memoryDriver);
-
 function S4() {
     // Generate four random hex digits.
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -44,7 +41,7 @@ class Storage {
         } else if (type === 'local') {
             await localForage.config({'driver': localForage.LOCALSTORAGE});
         } else if (type === 'in_memory') {
-            localForage.config({'driver': IN_MEMORY});
+            localForage.setDriver(memoryDriver._driver);
         } else if (type !== 'indexed') {
             throw new Error("Skeletor.storage: No storage type was specified");
         }
@@ -215,6 +212,8 @@ class Storage {
     }
 }
 
+Storage.IN_MEMORY = memoryDriver._driver
+Storage.memoryStorageInitialized = localForage.defineDriver(memoryDriver);
 Storage.sessionStorageInitialized = localForage.defineDriver(sessionStorageWrapper);
 Storage.localForage = localForage;
 export default Storage;
