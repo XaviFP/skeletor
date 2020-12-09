@@ -2,10 +2,11 @@
  * IndexedDB, localStorage and sessionStorage adapter
  */
 import * as localForage from "localforage";
-import * as memoryDriver from "localforage-driver-memory";
+// import * as memoryDriver from "localforage-driver-memory";
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import isString from 'lodash-es/isString.js';
 import sessionStorageWrapper from "./drivers/sessionStorage.js";
+import noStorageWrapper from "./drivers/noStorage.js";
 
 function S4() {
     // Generate four random hex digits.
@@ -41,7 +42,7 @@ class Storage {
         } else if (type === 'local') {
             await localForage.config({'driver': localForage.LOCALSTORAGE});
         } else if (type === 'in_memory') {
-            localForage.setDriver(memoryDriver._driver);
+            localForage.setDriver(noStorageWrapper._driver);
         } else if (type !== 'indexed') {
             throw new Error("Skeletor.storage: No storage type was specified");
         }
@@ -212,8 +213,8 @@ class Storage {
     }
 }
 
-Storage.IN_MEMORY = memoryDriver._driver
-Storage.memoryStorageInitialized = localForage.defineDriver(memoryDriver);
+Storage.IN_MEMORY = noStorageWrapper._driver
+Storage.memoryStorageInitialized = localForage.defineDriver(noStorageWrapper);
 Storage.sessionStorageInitialized = localForage.defineDriver(sessionStorageWrapper);
 Storage.localForage = localForage;
 export default Storage;
