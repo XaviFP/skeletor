@@ -17,7 +17,7 @@
 
 import executeCallback from "localforage/src/utils/executeCallback";
 import getCallback from "localforage/src/utils/getCallback";
-import { Promise } from "window-or-global";
+// import { Promise } from "window-or-global";
 
 function isNoStorageValid() {
   return true;
